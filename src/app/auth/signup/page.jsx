@@ -1,13 +1,29 @@
 'use client';
+import { authClient } from "@/lib/auth-client";
 import { Check } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, Label, TextField } from "@heroui/react";
 
+
 const SignUpPage = () => {
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
-        const formData=new FormData(e.currentTarget)
-     
-        // alert(`Form submitted with: ${JSON.stringify(data, null, 2)}`);
+        const formData = new FormData(e.currentTarget);
+        const userData = Object.fromEntries(formData);
+     const {data, error}= await authClient.signUp.email(
+        {
+            name:userData.name,
+            email:userData.email,
+            password:userData.password,
+            callbackURL: '/'
+        }
+     )
+       console.log('Signup response', {data, error});
+       if(error){
+        alert(error.message)
+       }
+       if(data){
+        alert('Sign up Successful Please Verify Your Email')
+       }
     };
     return (
         <div>
